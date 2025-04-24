@@ -17,7 +17,9 @@ MainComponent::MainComponent()
 
     // Configure components
     titleLabel.setText("Audio Title", juce::dontSendNotification);
+    titleLabel.setJustificationType(juce::Justification::centred);
     artistLabel.setText("Artist Name", juce::dontSendNotification);
+    artistLabel.setJustificationType(juce::Justification::centred);
 
     progressSlider.setRange(0.0, 1.0);
     progressSlider.setSliderStyle(juce::Slider::LinearHorizontal);
@@ -90,7 +92,7 @@ void MainComponent::resized()
     auto area = getLocalBounds();
 
     // Top area: Cover, Title, Artist
-    auto topArea = area.removeFromTop(200);
+    auto topArea = area.removeFromTop(270);
 
     // Center the cover image, title, and artist
     int coverSize = 150; // Size of the cover image
@@ -115,7 +117,6 @@ void MainComponent::resized()
     // Control buttons area
     auto controlArea = bottomArea.removeFromTop(80);
     int buttonWidth = controlArea.getWidth() / 5; // Divide width equally among 5 buttons
-    int buttonHeight = controlArea.getHeight();
 
     loopButton.setBounds(controlArea.removeFromLeft(buttonWidth));
     prevButton.setBounds(controlArea.removeFromLeft(buttonWidth));
