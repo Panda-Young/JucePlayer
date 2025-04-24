@@ -43,6 +43,7 @@ private:
 
     // Audio State
     bool isPlaying = false;
+    bool isPlaylistVisible = false;
 
     // Playlist Data
     juce::StringArray playlistItems; // Store playlist items

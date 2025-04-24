@@ -63,7 +63,7 @@ void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate
     // Audio setup
 }
 
-void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
+void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill)
 {
     // Audio processing
     bufferToFill.clearActiveBufferRegion();
@@ -75,13 +75,12 @@ void MainComponent::releaseResources()
 }
 
 //==============================================================================
-void MainComponent::paint(juce::Graphics& g)
+void MainComponent::paint(juce::Graphics &g)
 {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
     // Draw a white background for the cover image if no image is set
-    if (coverImage.getImage().isNull())
-    {
+    if (coverImage.getImage().isNull()) {
         g.setColour(juce::Colours::white);
         g.fillRect(coverImage.getBounds());
     }
@@ -124,40 +123,36 @@ void MainComponent::resized()
     nextButton.setBounds(controlArea.removeFromLeft(buttonWidth));
     playlistButton.setBounds(controlArea.removeFromLeft(buttonWidth));
 
-    // Playlist area
-    playlistBox.setBounds(area);
+    if (isPlaylistVisible) {
+        playlistBox.setBounds(area);
+        playlistBox.setVisible(true); // Ensure it's visible
+    } else {
+        playlistBox.setVisible(false); // Hide it
+    }
 }
 
 //==============================================================================
-void MainComponent::buttonClicked(juce::Button* button)
+void MainComponent::buttonClicked(juce::Button *button)
 {
-    if (button == &playPauseButton)
-    {
+    if (button == &playPauseButton) {
         isPlaying = !isPlaying;
         playPauseButton.setButtonText(isPlaying ? "Pause" : "Play");
-    }
-    else if (button == &prevButton)
-    {
+    } else if (button == &prevButton) {
         // Handle previous track
-    }
-    else if (button == &nextButton)
-    {
+    } else if (button == &nextButton) {
         // Handle next track
-    }
-    else if (button == &loopButton)
-    {
+    } else if (button == &loopButton) {
         // Handle loop mode
-    }
-    else if (button == &playlistButton)
-    {
-        // Handle playlist button click
+    } else if (button == &playlistButton) {
+        isPlaylistVisible = !isPlaylistVisible;    // Toggle visibility
+        playlistBox.setVisible(isPlaylistVisible); // Set visibility
+        resized();                                 // Re-layout components
     }
 }
 
-void MainComponent::sliderValueChanged(juce::Slider* slider)
+void MainComponent::sliderValueChanged(juce::Slider *slider)
 {
-    if (slider == &progressSlider)
-    {
+    if (slider == &progressSlider) {
         // Handle progress change
     }
 }
@@ -169,7 +164,7 @@ int MainComponent::getNumRows()
     return playlistItems.size(); // Return the number of items in the playlist
 }
 
-void MainComponent::paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected)
+void MainComponent::paintListBoxItem(int rowNumber, juce::Graphics &g, int width, int height, bool rowIsSelected)
 {
     if (rowIsSelected)
         g.fillAll(juce::Colours::lightblue); // Highlight selected row
@@ -178,7 +173,7 @@ void MainComponent::paintListBoxItem(int rowNumber, juce::Graphics& g, int width
     g.drawText(playlistItems[rowNumber], 0, 0, width, height, juce::Justification::centredLeft);
 }
 
-void MainComponent::listBoxItemClicked(int row, const juce::MouseEvent&)
+void MainComponent::listBoxItemClicked(int row, const juce::MouseEvent &)
 {
     // Handle playlist item click
     juce::String selectedTrack = playlistItems[row];
