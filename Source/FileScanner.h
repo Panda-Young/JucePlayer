@@ -9,5 +9,5 @@ public:
     juce::StringArray extractFileInfo(const juce::File& file);
 
 private:
-    juce::StringArray supportedFormats = { ".mp3", ".wav", ".flac" };
+    juce::StringArray supportedFormats = { ".mp3", ".wav", ".flac", ".ogg", ".m4a" };
 };

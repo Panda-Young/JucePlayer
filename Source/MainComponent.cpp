@@ -1,26 +1,110 @@
 #include "MainComponent.h"
 #include "FileScanner.h"
+#include "Logger.h"
 #include "PlaylistDataManager.h"
+#include <juce_core/juce_core.h>
+#include <juce_events/juce_events.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 
 MainComponent::MainComponent()
+{
+    LOGD("Initializing MainComponent");
+
+    // Check Android SDK version
+    auto androidSDKVersion = juce::SystemStats::getOperatingSystemType(); // 获取 Android SDK 版本
+
+    // Request appropriate runtime permissions based on Android version
+    if (androidSDKVersion >= 33) // Android 13 (Tiramisu) and above
+    {
+        if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readMediaAudio) &&
+            !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readMediaAudio)) {
+            juce::RuntimePermissions::request(
+                juce::RuntimePermissions::readMediaAudio,
+                [this](bool granted) {
+                    if (granted) {
+                        LOGD("READ_MEDIA_AUDIO permission granted");
+                        initializeAfterPermissionGranted();
+                    } else {
+                        LOGE("READ_MEDIA_AUDIO permission denied");
+                        juce::AlertWindow::showMessageBoxAsync(
+                            juce::AlertWindow::WarningIcon,
+                            "Permission Required",
+                            "READ_MEDIA_AUDIO permission is required to scan for music files. Please grant the permission in the app settings.",
+                            "OK");
+                    }
+                });
+        } else {
+            initializeAfterPermissionGranted();
+        }
+    } else if (androidSDKVersion >= 29) // Android 10 (Q) and above
+    {
+        if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readExternalStorage) &&
+            !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readExternalStorage)) {
+            juce::RuntimePermissions::request(
+                juce::RuntimePermissions::readExternalStorage,
+                [this](bool granted) {
+                    if (granted) {
+                        LOGD("READ_EXTERNAL_STORAGE permission granted");
+                        initializeAfterPermissionGranted();
+                    } else {
+                        LOGE("READ_EXTERNAL_STORAGE permission denied");
+                        juce::AlertWindow::showMessageBoxAsync(
+                            juce::AlertWindow::WarningIcon,
+                            "Permission Required",
+                            "READ_EXTERNAL_STORAGE permission is required to scan for music files. Please grant the permission in the app settings.",
+                            "OK");
+                    }
+                });
+        } else {
+            initializeAfterPermissionGranted();
+        }
+    } else // Android 9 (Pie) and below
+    {
+        if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readExternalStorage) &&
+            !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readExternalStorage)) {
+            juce::RuntimePermissions::request(
+                juce::RuntimePermissions::readExternalStorage,
+                [this](bool granted) {
+                    if (granted) {
+                        LOGD("READ_EXTERNAL_STORAGE permission granted");
+                        initializeAfterPermissionGranted();
+                    } else {
+                        LOGE("READ_EXTERNAL_STORAGE permission denied");
+                        juce::AlertWindow::showMessageBoxAsync(
+                            juce::AlertWindow::WarningIcon,
+                            "Permission Required",
+                            "READ_EXTERNAL_STORAGE permission is required to scan for music files. Please grant the permission in the app settings.",
+                            "OK");
+                    }
+                });
+        } else {
+            initializeAfterPermissionGranted();
+        }
+    }
+}
+
+void MainComponent::initializeAfterPermissionGranted()
 {
     // Initialize playlist data manager
     PlaylistDataManager playlistDataManager;
 
     // Load playlist from file
     playlistItems = playlistDataManager.loadPlaylist();
+    LOGD("Loaded %d playlist items from file", playlistItems.size());
 
     // If no playlist data, scan for music files and save to file
-    if (playlistItems.isEmpty())
-    {
+    if (playlistItems.isEmpty()) {
+        LOGD("No playlist data found, scanning for music files");
         FileScanner fileScanner;
         auto musicFiles = fileScanner.scanForMusicFiles(juce::File::getSpecialLocation(juce::File::userMusicDirectory));
-        for (const auto& file : musicFiles)
-        {
+        LOGD("Found %d music files", musicFiles.size());
+
+        for (const auto &file : musicFiles) {
             auto fileInfo = fileScanner.extractFileInfo(file);
             playlistItems.addArray(fileInfo);
         }
         playlistDataManager.savePlaylist(playlistItems);
+        LOGD("Saved playlist data to file");
     }
 
     // Set up UI components
@@ -70,6 +154,7 @@ MainComponent::MainComponent()
 
     // Set component size
     setSize(800, 600);
+    LOGD("MainComponent initialized successfully");
 }
 
 MainComponent::~MainComponent()

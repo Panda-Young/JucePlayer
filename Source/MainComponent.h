@@ -12,6 +12,7 @@ public:
     //==============================================================================
     MainComponent();
     ~MainComponent() override;
+    void initializeAfterPermissionGranted();
 
     //==============================================================================
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;

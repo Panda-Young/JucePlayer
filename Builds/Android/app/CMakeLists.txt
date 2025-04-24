@@ -36,6 +36,7 @@ add_library( ${BINARY_NAME}
 
     SHARED
 
+    "../../../Source/Logger.h"
     "../../../Source/FileScanner.cpp"
     "../../../Source/FileScanner.h"
     "../../../Source/PlaylistDataManager.cpp"
@@ -2688,6 +2689,7 @@ add_library( ${BINARY_NAME}
 )
 
 set_source_files_properties(
+    "../../../Source/Logger.h"
     "../../../Source/FileScanner.h"
     "../../../Source/PlaylistDataManager.h"
     "../../../Source/MainComponent.h"
