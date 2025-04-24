@@ -36,6 +36,10 @@ add_library( ${BINARY_NAME}
 
     SHARED
 
+    "../../../Source/FileScanner.cpp"
+    "../../../Source/FileScanner.h"
+    "../../../Source/PlaylistDataManager.cpp"
+    "../../../Source/PlaylistDataManager.h"
     "../../../Source/Main.cpp"
     "../../../Source/MainComponent.h"
     "../../../Source/MainComponent.cpp"
@@ -2684,6 +2688,8 @@ add_library( ${BINARY_NAME}
 )
 
 set_source_files_properties(
+    "../../../Source/FileScanner.h"
+    "../../../Source/PlaylistDataManager.h"
     "../../../Source/MainComponent.h"
     "../../../../../../Downloads/Work/JUCE/modules/juce_analytics/analytics/juce_Analytics.cpp"
     "../../../../../../Downloads/Work/JUCE/modules/juce_analytics/analytics/juce_Analytics.h"

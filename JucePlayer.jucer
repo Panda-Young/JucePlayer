@@ -4,6 +4,12 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="acTabL" name="JucePlayer">
     <GROUP id="{BED67407-13B9-BF0E-9DC7-4C0A82B4C4B4}" name="Source">
+      <FILE id="VOUcHI" name="FileScanner.cpp" compile="1" resource="0" file="Source/FileScanner.cpp"/>
+      <FILE id="hag8vV" name="FileScanner.h" compile="0" resource="0" file="Source/FileScanner.h"/>
+      <FILE id="lUn1te" name="PlaylistDataManager.cpp" compile="1" resource="0"
+            file="Source/PlaylistDataManager.cpp"/>
+      <FILE id="PKHx2X" name="PlaylistDataManager.h" compile="0" resource="0"
+            file="Source/PlaylistDataManager.h"/>
       <FILE id="MIIFJ8" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="QhAoWq" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="iStpMt" name="MainComponent.cpp" compile="1" resource="0"

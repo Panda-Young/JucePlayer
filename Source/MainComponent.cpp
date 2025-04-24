@@ -1,8 +1,28 @@
 #include "MainComponent.h"
+#include "FileScanner.h"
+#include "PlaylistDataManager.h"
 
-//==============================================================================
 MainComponent::MainComponent()
 {
+    // Initialize playlist data manager
+    PlaylistDataManager playlistDataManager;
+
+    // Load playlist from file
+    playlistItems = playlistDataManager.loadPlaylist();
+
+    // If no playlist data, scan for music files and save to file
+    if (playlistItems.isEmpty())
+    {
+        FileScanner fileScanner;
+        auto musicFiles = fileScanner.scanForMusicFiles(juce::File::getSpecialLocation(juce::File::userMusicDirectory));
+        for (const auto& file : musicFiles)
+        {
+            auto fileInfo = fileScanner.extractFileInfo(file);
+            playlistItems.addArray(fileInfo);
+        }
+        playlistDataManager.savePlaylist(playlistItems);
+    }
+
     // Set up UI components
     addAndMakeVisible(coverImage);
     addAndMakeVisible(titleLabel);
