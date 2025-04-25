@@ -47,9 +47,9 @@
                    androidInternetNeeded="0" microphonePermissionNeeded="0" cameraPermissionNeeded="0"
                    androidBluetoothScanNeeded="0" androidBluetoothAdvertiseNeeded="0"
                    androidBluetoothConnectNeeded="0" androidReadMediaAudioPermission="1"
-                   androidExternalWriteNeeded="1" androidInAppBilling="0" androidVibratePermissionNeeded="0"
+                   androidExternalWriteNeeded="1" androidInAppBilling="0" androidVibratePermissionNeeded="1"
                    androidEnableContentSharing="0" androidPushNotifications="1"
-                   gradleWrapperVersion="8.9.2">
+                   gradleWrapperVersion="8.9.2" gradleClangTidy="1" androidOtherPermissions="android.permission.MANAGE_EXTERNAL_STORAGE">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="JucePlayer"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="JucePlayer"/>

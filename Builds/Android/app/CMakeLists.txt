@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.22)
 
 project(juce_jni_project)
 
+set(CMAKE_CXX_CLANG_TIDY "${ANDROID_TOOLCHAIN_ROOT}/bin/clang-tidy")
+
 set(BINARY_NAME "juce_jni")
 
 set(OBOE_DIR "C:/Users/young/Downloads/Work/JUCE/modules/juce_audio_devices/native/oboe")

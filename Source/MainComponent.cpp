@@ -14,8 +14,7 @@ MainComponent::MainComponent()
     auto androidSDKVersion = juce::SystemStats::getOperatingSystemType(); // 获取 Android SDK 版本
 
     // Request appropriate runtime permissions based on Android version
-    if (androidSDKVersion >= 33) // Android 13 (Tiramisu) and above
-    {
+    if (androidSDKVersion >= 33) { // Android 13 (Tiramisu) and above
         if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readMediaAudio) &&
             !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readMediaAudio)) {
             juce::RuntimePermissions::request(
@@ -36,30 +35,7 @@ MainComponent::MainComponent()
         } else {
             initializeAfterPermissionGranted();
         }
-    } else if (androidSDKVersion >= 29) // Android 10 (Q) and above
-    {
-        if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readExternalStorage) &&
-            !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readExternalStorage)) {
-            juce::RuntimePermissions::request(
-                juce::RuntimePermissions::readExternalStorage,
-                [this](bool granted) {
-                    if (granted) {
-                        LOGD("READ_EXTERNAL_STORAGE permission granted");
-                        initializeAfterPermissionGranted();
-                    } else {
-                        LOGE("READ_EXTERNAL_STORAGE permission denied");
-                        juce::AlertWindow::showMessageBoxAsync(
-                            juce::AlertWindow::WarningIcon,
-                            "Permission Required",
-                            "READ_EXTERNAL_STORAGE permission is required to scan for music files. Please grant the permission in the app settings.",
-                            "OK");
-                    }
-                });
-        } else {
-            initializeAfterPermissionGranted();
-        }
-    } else // Android 9 (Pie) and below
-    {
+    } else { // Android 10 (Q) and above
         if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readExternalStorage) &&
             !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readExternalStorage)) {
             juce::RuntimePermissions::request(
