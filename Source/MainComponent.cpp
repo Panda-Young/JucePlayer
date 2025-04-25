@@ -10,53 +10,46 @@ MainComponent::MainComponent()
 {
     LOGD("Initializing MainComponent");
 
-    // Check Android SDK version
-    auto androidSDKVersion = juce::SystemStats::getOperatingSystemType(); // 获取 Android SDK 版本
-
-    // Request appropriate runtime permissions based on Android version
-    if (androidSDKVersion >= 33) { // Android 13 (Tiramisu) and above
-        if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readMediaAudio) &&
-            !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readMediaAudio)) {
-            juce::RuntimePermissions::request(
-                juce::RuntimePermissions::readMediaAudio,
-                [this](bool granted) {
-                    if (granted) {
-                        LOGD("READ_MEDIA_AUDIO permission granted");
-                        initializeAfterPermissionGranted();
-                    } else {
-                        LOGE("READ_MEDIA_AUDIO permission denied");
-                        juce::AlertWindow::showMessageBoxAsync(
-                            juce::AlertWindow::WarningIcon,
-                            "Permission Required",
-                            "READ_MEDIA_AUDIO permission is required to scan for music files. Please grant the permission in the app settings.",
-                            "OK");
-                    }
-                });
-        } else {
-            initializeAfterPermissionGranted();
-        }
-    } else { // Android 10 (Q) and above
-        if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readExternalStorage) &&
-            !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readExternalStorage)) {
-            juce::RuntimePermissions::request(
-                juce::RuntimePermissions::readExternalStorage,
-                [this](bool granted) {
-                    if (granted) {
-                        LOGD("READ_EXTERNAL_STORAGE permission granted");
-                        initializeAfterPermissionGranted();
-                    } else {
-                        LOGE("READ_EXTERNAL_STORAGE permission denied");
-                        juce::AlertWindow::showMessageBoxAsync(
-                            juce::AlertWindow::WarningIcon,
-                            "Permission Required",
-                            "READ_EXTERNAL_STORAGE permission is required to scan for music files. Please grant the permission in the app settings.",
-                            "OK");
-                    }
-                });
-        } else {
-            initializeAfterPermissionGranted();
-        }
+    if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readMediaAudio) &&
+        !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readMediaAudio)) {
+        juce::RuntimePermissions::request(
+            juce::RuntimePermissions::readMediaAudio,
+            [this](bool granted) {
+                if (granted) {
+                    LOGD("READ_MEDIA_AUDIO permission granted");
+                } else {
+                    LOGE("READ_MEDIA_AUDIO permission denied");
+                    juce::AlertWindow::showMessageBoxAsync(
+                        juce::AlertWindow::WarningIcon,
+                        "Permission Required",
+                        "READ_MEDIA_AUDIO permission is required to scan for music files. Please grant the permission in the app settings.",
+                        "OK");
+                }
+            });
+    } else {
+        LOGD("READ_MEDIA_AUDIO permission already granted");
     }
+
+    if (juce::RuntimePermissions::isRequired(juce::RuntimePermissions::readExternalStorage) &&
+        !juce::RuntimePermissions::isGranted(juce::RuntimePermissions::readExternalStorage)) {
+        juce::RuntimePermissions::request(
+            juce::RuntimePermissions::readExternalStorage,
+            [this](bool granted) {
+                if (granted) {
+                    LOGD("READ_EXTERNAL_STORAGE permission granted");
+                } else {
+                    LOGE("READ_EXTERNAL_STORAGE permission denied");
+                    juce::AlertWindow::showMessageBoxAsync(
+                        juce::AlertWindow::WarningIcon,
+                        "Permission Required",
+                        "READ_EXTERNAL_STORAGE permission is required to scan for music files. Please grant the permission in the app settings.",
+                        "OK");
+                }
+            });
+    } else {
+        LOGD("READ_EXTERNAL_STORAGE permission already granted");
+    }
+    initializeAfterPermissionGranted();
 }
 
 void MainComponent::initializeAfterPermissionGranted()
@@ -192,10 +185,10 @@ void MainComponent::resized()
 
     // Bottom area: Progress bar and controls
     auto bottomArea = area.removeFromBottom(100);
-    progressSlider.setBounds(bottomArea.removeFromTop(20));
+    progressSlider.setBounds(bottomArea.removeFromTop(30));
 
     // Control buttons area
-    auto controlArea = bottomArea.removeFromTop(80);
+    auto controlArea = bottomArea.removeFromTop(60);
     int buttonWidth = controlArea.getWidth() / 5; // Divide width equally among 5 buttons
 
     loopButton.setBounds(controlArea.removeFromLeft(buttonWidth));
