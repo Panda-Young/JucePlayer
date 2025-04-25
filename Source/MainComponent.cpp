@@ -65,13 +65,9 @@ void MainComponent::initializeAfterPermissionGranted()
     if (playlistItems.isEmpty()) {
         LOGD("No playlist data found, scanning for music files");
         FileScanner fileScanner;
-        auto musicFiles = fileScanner.scanForMusicFiles(juce::File::getSpecialLocation(juce::File::userMusicDirectory));
-        LOGD("Found %d music files", musicFiles.size());
+        playlistItems = fileScanner.scanForMusicFiles(juce::File::getSpecialLocation(juce::File::userMusicDirectory));
+        LOGD("Found %d music files", playlistItems.size());
 
-        for (const auto &file : musicFiles) {
-            auto fileInfo = fileScanner.extractFileInfo(file);
-            playlistItems.addArray(fileInfo);
-        }
         playlistDataManager.savePlaylist(playlistItems);
         LOGD("Saved playlist data to file");
     }
@@ -115,10 +111,6 @@ void MainComponent::initializeAfterPermissionGranted()
     playlistButton.addListener(this);
 
     // Initialize playlist data
-    playlistItems.add("Track 1");
-    playlistItems.add("Track 2");
-    playlistItems.add("Track 3");
-
     playlistBox.setModel(this); // Set the model
 
     // Set component size
