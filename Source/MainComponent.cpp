@@ -169,6 +169,7 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
 void MainComponent::releaseResources()
 {
     // Release audio resources
+    currentAudioSource.reset();
 }
 
 //==============================================================================
@@ -234,7 +235,13 @@ void MainComponent::buttonClicked(juce::Button *button)
     if (button == &playPauseButton) {
         isPlaying = !isPlaying;
         playPauseButton.setButtonText(isPlaying ? "Pause" : "Play");
-    } else if (button == &prevButton) {
+        
+        if (isPlaying && currentAudioSource == nullptr && currentAudioFile.existsAsFile()) {
+            // 重新准备音频
+            prepareToPlay(512, 44100.0); // 使用合适的缓冲区大小和采样率
+        }
+    } 
+    else if (button == &prevButton) {
         // Handle previous track
     } else if (button == &nextButton) {
         // Handle next track
@@ -284,6 +291,12 @@ void MainComponent::listBoxItemClicked(int row, const juce::MouseEvent&)
         {
             currentAudioFile = audioFile;
             LOGD("Selected audio file: %s", audioFile.getFullPathName().toStdString().c_str());
+            
+            // 停止当前播放并准备新文件
+            isPlaying = false;
+            playPauseButton.setButtonText("Play");
+            currentAudioSource.reset(); // 释放旧资源
+            prepareToPlay(512, 44100.0); // 准备新文件
         }
         else
         {
