@@ -2,10 +2,6 @@
 #include "FileScanner.h"
 #include "Logger.h"
 #include "PlaylistDataManager.h"
-#include <juce_core/juce_core.h>
-#include <juce_events/juce_events.h>
-#include <juce_gui_basics/juce_gui_basics.h>
-
 MainComponent::MainComponent()
 {
     LOGD("Initializing MainComponent");
@@ -158,7 +154,6 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     if (isPlaying && currentAudioSource != nullptr)
     {
         currentAudioSource->getNextAudioBlock(bufferToFill);
-        LOGD("Audio data filled: %d samples", bufferToFill.numSamples);
     }
     else
     {
