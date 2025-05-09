@@ -45,6 +45,10 @@ private:
     // Audio State
     bool isPlaying = false;
     bool isPlaylistVisible = false;
+    juce::AudioFormatManager formatManager; // 管理音频格式解码器
+    std::unique_ptr<juce::AudioFormatReaderSource> currentAudioSource; // 当前音频源
+    juce::File currentAudioFile; // 当前选中的音频文件
+    int currentRow = -1; // 当前选中行号
 
     // Playlist Data
     juce::StringArray playlistItems; // Store playlist items

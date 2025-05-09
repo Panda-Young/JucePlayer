@@ -118,7 +118,9 @@ void MainComponent::initializeAfterPermissionGranted()
 
     // Set up audio
     setAudioChannels(0, 2);
-
+    // 初始化音频格式管理器
+    formatManager.registerBasicFormats(); // 注册常见音频格式解码器
+    LOGD("Audio format manager initialized");
     LOGD("MainComponent initialized successfully");
 }
 
@@ -130,13 +132,38 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    // Audio setup
+    if (currentAudioFile.existsAsFile())
+    {
+        // 创建音频读取器（直接使用原始指针）
+        juce::AudioFormatReader* reader = formatManager.createReaderFor(currentAudioFile);
+        
+        if (reader != nullptr)
+        {
+            // 使用原始指针初始化 AudioFormatReaderSource
+            currentAudioSource.reset(new juce::AudioFormatReaderSource(reader, true));
+            
+            // 设置音频源参数
+            currentAudioSource->prepareToPlay(samplesPerBlockExpected, sampleRate);
+            LOGD("Prepared to play audio: %s", currentAudioFile.getFileName().toStdString().c_str());
+        }
+        else
+        {
+            LOGE("Failed to create audio reader for: %s", currentAudioFile.getFullPathName().toStdString().c_str());
+        }
+    }
 }
 
-void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill)
+void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    // Audio processing
-    bufferToFill.clearActiveBufferRegion();
+    if (isPlaying && currentAudioSource != nullptr)
+    {
+        currentAudioSource->getNextAudioBlock(bufferToFill);
+        LOGD("Audio data filled: %d samples", bufferToFill.numSamples);
+    }
+    else
+    {
+        bufferToFill.clearActiveBufferRegion();
+    }
 }
 
 void MainComponent::releaseResources()
@@ -243,10 +270,24 @@ void MainComponent::paintListBoxItem(int rowNumber, juce::Graphics &g, int width
     g.drawText(playlistItems[rowNumber], 0, 0, width, height, juce::Justification::centredLeft);
 }
 
-void MainComponent::listBoxItemClicked(int row, const juce::MouseEvent &)
+void MainComponent::listBoxItemClicked(int row, const juce::MouseEvent&)
 {
-    // Handle playlist item click
-    juce::String selectedTrack = playlistItems[row];
-    titleLabel.setText(selectedTrack, juce::dontSendNotification);
-    artistLabel.setText("Artist", juce::dontSendNotification); // Update artist name if needed
+    if (row >= 0 && row < playlistItems.size())
+    {
+        currentRow = row;
+        juce::String selectedTrack = playlistItems[row];
+        titleLabel.setText(selectedTrack, juce::dontSendNotification);
+        
+        // 假设播放列表项是文件路径，实际需根据数据结构调整
+        juce::File audioFile(selectedTrack);
+        if (audioFile.existsAsFile())
+        {
+            currentAudioFile = audioFile;
+            LOGD("Selected audio file: %s", audioFile.getFullPathName().toStdString().c_str());
+        }
+        else
+        {
+            LOGE("Selected file does not exist: %s", audioFile.getFullPathName().toStdString().c_str());
+        }
+    }
 }
