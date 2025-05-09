@@ -115,6 +115,10 @@ void MainComponent::initializeAfterPermissionGranted()
 
     // Set component size
     setSize(800, 600);
+
+    // Set up audio
+    setAudioChannels(0, 2);
+
     LOGD("MainComponent initialized successfully");
 }
 
