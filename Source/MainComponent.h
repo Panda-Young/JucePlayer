@@ -4,9 +4,9 @@
 
 //==============================================================================
 class MainComponent : public juce::AudioAppComponent,
-                     public juce::Button::Listener,
-                     public juce::Slider::Listener,
-                     public juce::ListBoxModel // Add this
+                      public juce::Button::Listener,
+                      public juce::Slider::Listener,
+                      public juce::ListBoxModel // Add this
 {
 public:
     //==============================================================================
@@ -16,22 +16,22 @@ public:
 
     //==============================================================================
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
     void resized() override;
 
     //==============================================================================
-    void buttonClicked(juce::Button* button) override;
-    void sliderValueChanged(juce::Slider* slider) override;
+    void buttonClicked(juce::Button *button) override;
+    void sliderValueChanged(juce::Slider *slider) override;
 
     //==============================================================================
     // ListBoxModel overrides
     int getNumRows() override;
-    void paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected) override;
-    void listBoxItemClicked(int row, const juce::MouseEvent&) override;
+    void paintListBoxItem(int rowNumber, juce::Graphics &g, int width, int height, bool rowIsSelected) override;
+    void listBoxItemClicked(int row, const juce::MouseEvent &) override;
 
 private:
     //==============================================================================
@@ -45,10 +45,10 @@ private:
     // Audio State
     bool isPlaying = false;
     bool isPlaylistVisible = false;
-    juce::AudioFormatManager formatManager; // 管理音频格式解码器
-    std::unique_ptr<juce::AudioFormatReaderSource> currentAudioSource; // 当前音频源
-    juce::File currentAudioFile; // 当前选中的音频文件
-    int currentRow = -1; // 当前选中行号
+    juce::AudioFormatManager formatManager;
+    std::unique_ptr<juce::AudioFormatReaderSource> currentAudioSource;
+    juce::File currentAudioFile;
+    int currentRow = -1;
 
     // Playlist Data
     juce::StringArray playlistItems; // Store playlist items

@@ -5,7 +5,7 @@ class PlaylistDataManager
 {
 public:
     PlaylistDataManager();
-    void savePlaylist(const juce::StringArray& playlistItems);
+    void savePlaylist(const juce::StringArray &playlistItems);
     juce::StringArray loadPlaylist();
 
 private:
